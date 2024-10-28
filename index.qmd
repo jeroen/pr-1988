@@ -1,0 +1,45 @@
+---
+format: revealjs
+---
+
+
+## Proposal
+
+Support two testing tiers in testthat:
+
+  1. ### Release tests 📦 
+     - Should always work
+     - Used downstream to verify package is functional
+  2. ### Development tests 👩‍💻
+     - Intended for developers and CI
+     - May require special tooling/setup
+     - Could be flaky
+
+## Why this is helpful
+
+Because `skip_on_cran()` is convoluted and confusing.
+
+
+```r
+# does the test run?
+test_that({
+  skip_on_cran()
+  expect_something()
+})
+```
+::: {.incremental}
+
+  - Logic: *if we are NOT __NOT_CRAN__ the test does NOT run* 🤯
+  - You are CRAN by default (except in r-lib/actions, RStudio, ...)
+  - What about Debian, r-universe, BioC, anaconda, etc?
+  - Confusing and looks like "CRAN cheating"
+:::
+
+
+## Testthat PR#1988
+
+![](devtest.png)
+
+ - Explicitly opt-in to developer tests using `dev-test` prefix.
+ - No "special casing cran" needed in test code
+ - Encourage robust releases tests
